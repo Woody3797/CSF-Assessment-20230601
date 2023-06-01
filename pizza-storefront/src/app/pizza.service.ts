@@ -20,7 +20,7 @@ export class PizzaService {
         const formData = data.getRawValue()
         let jsonData = JSON.stringify(formData)
 
-        return this.http.post<Order>(URL + '/api/order', jsonData)
+        return this.http.post<Order>('/api/order', jsonData)
     }
 
     // TODO: Task 5
@@ -28,7 +28,7 @@ export class PizzaService {
     // Do not change the method name
     getOrders(email: any): Observable<Order[]> {
 
-        return this.http.get<Order[]>(URL + '/api/orders/' + email)
+        return this.http.get<Order[]>('/api/orders/' + email)
     }
 
     // TODO: Task 7
@@ -36,7 +36,7 @@ export class PizzaService {
     // Do not change the method name
     delivered(orderId: string) {
 
-        return this.http.delete(URL + '/api/order/' + orderId)
+        return this.http.delete('/api/order/' + orderId)
     }
 
 }

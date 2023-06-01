@@ -47,12 +47,10 @@ public class OrderingService {
         ResponseEntity<String> resp = restTemplate.postForEntity(url, map, String.class);
 
         String payload = resp.getBody();
-        System.out.println(payload);
         String[] data = payload.split(",");
         order.setOrderId(data[0]);
         order.setDate(new Date(Long.parseLong(data[1])));
         order.setTotal(Float.parseFloat(data[2]));
-
         ordersRepo.add(order);
         pendingOrdersRepo.add(order);
 
