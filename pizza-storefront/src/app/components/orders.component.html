@@ -1,0 +1,14 @@
+<h2>Orders for {{ email }} </h2>
+
+<div *ngIf="orders$ | async as order">
+    <div *ngFor="let o of order" style="border: solid black;">
+        Date: {{ o.date }}
+        <br>
+        <div #orderId>
+            Order ID: {{ o.orderId }} <button (click)="process(o.orderId)">Delivered</button>
+        </div>
+        <br>
+        Total: ${{ o.total }}
+    </div>
+    <br>
+</div>
