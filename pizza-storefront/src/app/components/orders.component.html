@@ -1,7 +1,7 @@
 <h2>Orders for {{ email }} </h2>
 
 <div *ngIf="orders$ | async as order">
-    <div *ngFor="let o of order" style="border: solid black;">
+    <div *ngFor="let o of order" style="border: solid black; padding: 10px;">
         Date: {{ o.date }}
         <br>
         <div #orderId>
@@ -12,3 +12,4 @@
     </div>
     <br>
 </div>
+<button [routerLink]="['/']">Back</button>

@@ -44,8 +44,8 @@ export class MainComponent implements OnInit {
         })
 
         this.form = this.fb.group({
-            name: this.fb.control('qwe', [Validators.required]),
-            email: this.fb.control('asd@a.com', [Validators.required]),
+            name: this.fb.control('', [Validators.required]),
+            email: this.fb.control('', [Validators.required]),
             size: this.fb.control(2, [Validators.required]),
             base: this.fb.control('thin', [Validators.required]),
             sauce: this.fb.control('signature', [Validators.required]),
@@ -60,11 +60,7 @@ export class MainComponent implements OnInit {
 
     placeOrder() {
         // var checkedToppings!: string[]
-        const Toppings: String[] = this.form.value['toppings'];
-        const checkedToppings: string[] = PIZZA_TOPPINGS.filter((topping, index) => Toppings[index]);
-
-
-
+        
         this.utility.placeOrder(this.form).subscribe({
             next: () => this.router.navigate(['/orders', this.form.value['email']]),
             error: e => alert(e.message)

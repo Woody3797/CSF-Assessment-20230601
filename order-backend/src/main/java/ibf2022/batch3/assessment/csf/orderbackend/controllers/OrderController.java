@@ -69,7 +69,7 @@ public class OrderController {
     }
 
 	// TODO: Task 7 - DELETE /api/order/<orderId>
-    @PutMapping
+    @PutMapping(path = "/api/order/{orderId}")
     public ResponseEntity<String> deleteOrder(@PathVariable String orderId) {
         boolean result = orderingService.markOrderDelivered(orderId);
         if (!result) {
