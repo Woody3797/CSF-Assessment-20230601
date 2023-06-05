@@ -10,7 +10,7 @@
             Order ID: {{ o.orderId }} <button (click)="process(o.orderId)">Delivered</button>
         </div>
         <br>
-        Total: ${{ o.total }}
+        Total: ${{ o.total.toFixed(2) }}
     </div>
     <br>
 </div>

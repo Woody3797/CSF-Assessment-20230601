@@ -3,6 +3,7 @@ import { Observable, Subscription, firstValueFrom, map } from 'rxjs';
 import { Order } from '../model';
 import { PizzaService } from '../pizza.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-orders',
@@ -18,12 +19,14 @@ export class OrdersComponent implements OnInit, OnDestroy {
     orders$!: Observable<Order[] | undefined>
     delivered$!: Subscription
     email = ''
-    orders!: Order[]
 
     ngOnInit(): void {
         this.utility.email = this.activatedRoute.snapshot.params['email']
         this.orders$ = this.utility.getOrders(this.utility.email).pipe(map(result => {
-            this.orders = result
+            result.forEach((order: Order) => {
+                let date = order.date.replace('SGT', 'GMT+0800')
+                order.date = formatDate(new Date(Date.parse(date)), 'E, dd MMM yyyy || h:mm:ss aa z', 'en_US')
+            })
             return result
         }))
         this.email = this.utility.email
@@ -31,12 +34,16 @@ export class OrdersComponent implements OnInit, OnDestroy {
 
     process(orderId: string) {
         this.delivered$ = this.utility.delivered(orderId).subscribe(() => {
-            this.orders$ = this.utility.getOrders(this.utility.email),
-            this.orders$.subscribe(res => {
-                if (res?.length == 0) {
+            this.orders$ = this.utility.getOrders(this.utility.email).pipe(map(result => {
+                if (result?.length == 0) {
                     this.orders$ = new Observable<undefined>
                 }
-            })
+                result.forEach((order: Order) => {
+                    let date = order.date.replace('SGT', 'GMT+0800')
+                    order.date = formatDate(new Date(Date.parse(date)), 'E, dd MMM yyyy || h:mm:ss aa z', 'en_US')
+                })
+                return result
+            }))
         })
         
         // Using Observable and subscribe to get values
