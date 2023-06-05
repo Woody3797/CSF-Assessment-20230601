@@ -17,9 +17,10 @@ export class PizzaService {
     // You may add any parameters and return any type from placeOrder() method
     // Do not change the method name
     placeOrder(data: any): Observable<Order> {
-        const formData = data.getRawValue()
+        const formData = data
         let jsonData = JSON.stringify(formData)
-
+        console.info(jsonData)
+        
         return this.http.post<Order>('/api/order', jsonData)
     }
 
@@ -34,9 +35,9 @@ export class PizzaService {
     // TODO: Task 7
     // You may add any parameters and return any type from delivered() method
     // Do not change the method name
-    delivered(orderId: string) {
+    delivered(orderId: string): Observable<any> {
 
-        return this.http.delete('/api/order/' + orderId)
+        return (this.http.delete<any>('/api/order/' + orderId))
     }
 
 }

@@ -1,8 +1,10 @@
 <h2>Orders for {{ email }} </h2>
 
-<div *ngIf="orders$ | async as order">
-    <div *ngFor="let o of order" style="border: solid black; padding: 10px;">
-        Date: {{ o.date }}
+<div *ngIf="orders$ | async as order; else noOrders">
+    <div *ngFor="let o of order" style="border: solid black; padding: 10px; width: fit-content;">
+        <div>
+            Date: {{ o.date }}
+        </div>
         <br>
         <div #orderId>
             Order ID: {{ o.orderId }} <button (click)="process(o.orderId)">Delivered</button>
@@ -12,4 +14,10 @@
     </div>
     <br>
 </div>
+<br>
 <button [routerLink]="['/']">Back</button>
+
+<ng-template #noOrders>
+    No orders found
+    <br>
+</ng-template>

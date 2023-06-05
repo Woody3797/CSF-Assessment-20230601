@@ -22,7 +22,7 @@ const PIZZA_TOPPINGS: string[] = [
 })
 export class MainComponent implements OnInit {
 
-    pizzaSize = SIZES[2]
+    pizzaSize = SIZES[0]
 
     constructor() { }
     utility = inject(PizzaService)
@@ -31,24 +31,25 @@ export class MainComponent implements OnInit {
 
     form!: FormGroup
     toppings!: FormGroup
+    randomName = Math.random().toString(36).slice(-5).replace(/\d/g, String.fromCharCode(Math.random()*26+97))
 
     ngOnInit(): void {
         this.toppings = this.fb.group({
-            0: this.fb.control(false),
-            1: this.fb.control(false),
-            2: this.fb.control(false),
-            3: this.fb.control(false),
-            4: this.fb.control(false),
-            5: this.fb.control(false),
-            6: this.fb.control(false),
+            chicken: this.fb.control(false),
+            seafood: this.fb.control(false),
+            beef: this.fb.control(false),
+            vegetables: this.fb.control(false),
+            cheese: this.fb.control(false),
+            arugula: this.fb.control(false),
+            pineapple: this.fb.control(false),
         })
 
         this.form = this.fb.group({
-            name: this.fb.control('', [Validators.required]),
-            email: this.fb.control('', [Validators.required]),
-            size: this.fb.control(2, [Validators.required]),
+            name: this.fb.control(this.randomName, [Validators.required]),
+            email: this.fb.control('b@a.com', [Validators.required, Validators.email]),
+            size: this.fb.control(0, [Validators.required]),
             base: this.fb.control('thin', [Validators.required]),
-            sauce: this.fb.control('signature', [Validators.required]),
+            sauce: this.fb.control('classic', [Validators.required]),
             toppings: this.toppings,
             comments: this.fb.control('',),
         })
@@ -58,18 +59,42 @@ export class MainComponent implements OnInit {
         this.pizzaSize = SIZES[parseInt(size)]
     }
 
-    placeOrder() {
-        // var checkedToppings!: string[]
-        
-        this.utility.placeOrder(this.form).subscribe({
+    placeOrder() {        
+        this.form.value.toppings = this.checkToppings()
+
+        this.utility.placeOrder(this.form.value).subscribe({
             next: () => this.router.navigate(['/orders', this.form.value['email']]),
-            error: e => alert(e.message)
+            error: e => {
+                alert(e.message)
+                // location.reload()
+            }
         })
-        
     }
 
-    invalid() {
-        return this.form.invalid
+    invalid(): boolean {
+        return (this.checkToppings().length == 0 || this.form.invalid)
+        // if (this.checkToppings().length == 0 || this.form.invalid) {
+        //     return true
+        // }
+        // return false
     }
 
+    checkToppings(): string[] {
+        let selectedToppings: string[] = [];
+        Object.keys(this.toppings.controls).forEach(controlName => {
+            let controlValue = this.toppings.get(controlName)?.value;
+            if (controlValue === true) {
+                selectedToppings.push(controlName);
+            }
+        });
+        return selectedToppings;
+        // let checkedToppings: string[] = []
+        // let top = this.form.value.toppings
+        // for (const key in top) {
+        //     if (top[key] == true) {
+        //         checkedToppings.push(key)
+        //     }
+        // }
+        // return checkedToppings
+    }
 }

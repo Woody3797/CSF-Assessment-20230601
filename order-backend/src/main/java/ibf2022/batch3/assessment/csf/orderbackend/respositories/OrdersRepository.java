@@ -5,12 +5,15 @@ import java.util.List;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
-import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 
 import ibf2022.batch3.assessment.csf.orderbackend.models.PizzaOrder;
 
@@ -44,10 +47,15 @@ public class OrdersRepository {
 	// WARNING: Do not change the method's signature.
 	// Write the native MongoDB query in the comment below
 	// db.orders.find({
-    //      email: <email>
-    // })
+    //     email: 'b@a.com',
+    //     delivered: {$ne: true}
+    // }).sort({
+    //     date: -1
+    // });
 	public List<PizzaOrder> getPendingOrdersByEmail(String email) {
         Query query = Query.query(Criteria.where("email").is(email));
+        query.addCriteria(Criteria.where("delivered").ne(true)).with(Sort.by(Direction.DESC, "date"));
+
         List<Document> docs = mongoTemplate.find(query, Document.class, "orders");
         List<PizzaOrder> orders = new ArrayList<>();
         for (Document d : docs) {
@@ -61,13 +69,15 @@ public class OrdersRepository {
 	// TODO: Task 7
 	// WARNING: Do not change the method's signature.
 	// Write the native MongoDB query in the comment below
-	// db.orders.remove({
-    //      _id: <orderId>
-    // })
+	// db.orders.findOneAndUpdate(
+    //     { "_id": 'id' },
+    //     { $set: {"delivered" : true}}
+    // )
 	public boolean markOrderDelivered(String orderId) {
         Query query = Query.query(Criteria.where("_id").is(orderId));
-        DeleteResult res = mongoTemplate.remove(query, Document.class, "orders");
-		return res.getDeletedCount() > 0;
+        Update update = new Update().set("delivered", true);
+        UpdateResult res = mongoTemplate.upsert(query, update, Document.class, "orders");
+		return res.getModifiedCount() > 0;
 	}
 
 
@@ -81,7 +91,7 @@ public class OrdersRepository {
         doc.put("sauce", order.getSauce());
         doc.put("size", order.getSize());
         doc.put("comments", order.getComments());
-        doc.put("toppings", order.getTopplings());
+        doc.put("toppings", order.getToppings());
         doc.put("crust", order.getThickCrust() == true ? "thick" : "thin");
         return doc;
     }

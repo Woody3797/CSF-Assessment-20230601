@@ -63,7 +63,8 @@
               "browserTarget": "pizza-storefront:build:production"
             },
             "development": {
-              "browserTarget": "pizza-storefront:build:development"
+              "browserTarget": "pizza-storefront:build:development",
+              "proxyConfig": "./proxy-config.json"
             }
           },
           "defaultConfiguration": "development"

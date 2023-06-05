@@ -26,8 +26,8 @@ public class PendingOrdersRepository {
 	// TODO: Task 7
 	// WARNING: Do not change the method's signature.
 	public boolean delete(String orderId) {
-        redisTemplate.opsForValue().getAndDelete(orderId);
-		return orderId != null ? true : false;
+        String key = redisTemplate.opsForValue().getAndDelete(orderId);
+		return key != null ? true : false;
 	}
 
     private JsonObject toJson(PizzaOrder order) {

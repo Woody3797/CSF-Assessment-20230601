@@ -4,6 +4,7 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +24,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+import jakarta.json.JsonString;
 
 @Controller
 @RequestMapping
@@ -45,16 +46,15 @@ public class OrderController {
         order.setSauce(data.getString("sauce"));
         order.setSize(data.getInt("size"));
         order.setComments(data.getString("comments"));
-        // order.setTopplings(data.get("toppings"));
+        order.setToppings(data.getJsonArray("toppings").getValuesAs(JsonString::getString));
         order.setThickCrust(data.getString("base") == "thick" ? true : false);
         try {
             order = orderingService.placeOrder(order);
-            return ResponseEntity.ok().body(toJson(order).toString());
+            return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body(toJson(order).toString());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Json.createObjectBuilder().add("error", e.getMessage()).build().toString());
         }
     }
-
 
 	// TODO: Task 6 - GET /api/orders/<email>
     @GetMapping(path = "/api/orders/{email}")
@@ -74,13 +74,11 @@ public class OrderController {
     public ResponseEntity<String> deleteOrder(@PathVariable String orderId) {
         boolean result = orderingService.markOrderDelivered(orderId);
         if (!result) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_JSON).body("{'error': 'order not found'}");
         } else {
             return ResponseEntity.ok().body("{}");
         }
     }
-
-
 
 
     private JsonObject toJson(PizzaOrder order) {

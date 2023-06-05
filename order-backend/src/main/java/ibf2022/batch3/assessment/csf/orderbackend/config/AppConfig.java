@@ -21,6 +21,9 @@ public class AppConfig {
 	@Value("${spring.data.redis.database}")
 	private Integer redisDB;
 
+    @Value("${spring.data.redis.password}")
+	private String redisPassword;
+
 	// Warning: Do not modify the createTemplate() method; either its method signature 
 	// or its logic. Changing any of these will render any of your assessment task using
 	// this RedisTemplate INVALID
@@ -28,6 +31,9 @@ public class AppConfig {
 	public RedisTemplate<String, String> createRedisTemplate() {
 		RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
 		config.setDatabase(redisDB);
+        if (!redisPassword.isEmpty()) {
+            config.setPassword(redisPassword);
+        }
 
 		JedisClientConfiguration jedisClient = JedisClientConfiguration
 				.builder().build();

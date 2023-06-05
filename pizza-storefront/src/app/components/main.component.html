@@ -19,7 +19,7 @@
       <tr>
         <td> <label for="size">Size:</label> </td>
         <td>
-          <input type="range" id="size" min="0" max="3" value="0"
+          <input type="range" id="size" min="0" max="3" value="1"
               (change)="updateSize(size.value)" #size formControlName="size">
           <span class="ml-1vw">{{ pizzaSize }}</span>
         </td>
@@ -47,15 +47,15 @@
         <td> <label>Toppings:</label> </td>
         <td formArrayName="toppings">
           <div class="space-around" >
-            <input type="checkbox" name="toppings" value="chicken" formControlName="0"> Chicken
-            <input type="checkbox" name="toppings" value="seafood" formControlName="1"> Seafood
-            <input type="checkbox" name="toppings" value="beef" formControlName="2"> Beef
-            <input type="checkbox" name="toppings" value="vegetables" formControlName="3"> Vegetables
+            <input type="checkbox" name="toppings" value="chicken" formControlName="chicken"> Chicken
+            <input type="checkbox" name="toppings" value="seafood" formControlName="seafood"> Seafood
+            <input type="checkbox" name="toppings" value="beef" formControlName="beef"> Beef
+            <input type="checkbox" name="toppings" value="vegetables" formControlName="vegetables"> Vegetables
           </div>
           <div class="space-around">
-            <input type="checkbox" name="toppings" value="cheese" formControlName="4"> Extra Cheese
-            <input type="checkbox" name="toppings" value="arugula" formControlName="5"> Arugula (Rocket)
-            <input type="checkbox" name="toppings" value="pineapple" formControlName="6"> Pineapple
+            <input type="checkbox" name="toppings" value="cheese" formControlName="cheese"> Extra Cheese
+            <input type="checkbox" name="toppings" value="arugula" formControlName="arugula"> Arugula (Rocket)
+            <input type="checkbox" name="toppings" value="pineapple" formControlName="pineapple"> Pineapple
           </div>
           <div>
             <small>Select toppings, one or more from the above</small>
@@ -72,7 +72,7 @@
         <td></td>
         <td>
           <div class="justify-right">
-            <button type="submit" [disabled]="form.invalid">Place Order</button>
+            <button type="submit" [disabled]="invalid()">Place Order</button>
           </div>
         </td>
       </tr>
