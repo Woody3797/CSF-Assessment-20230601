@@ -36,8 +36,8 @@ public class OrderingService {
         map.add("toppings", order.getToppings().toString().replaceAll(regex, ""));
         map.add("comments", order.getComments());
 
-        // String url = "http://localhost:8080/api/getorderprice";
-        String url = "https://defiant-veil-production.up.railway.app/api/getorderprice";
+        String url = "http://localhost:8080/api/getorderprice";
+        // String url = "https://defiant-veil-production.up.railway.app/api/getorderprice";
         RestTemplate restTemplate = new RestTemplate();
         
         // RequestEntity<MultiValueMap<String, String>> req = RequestEntity.post(url).contentType(MediaType.APPLICATION_FORM_URLENCODED).body(map);
